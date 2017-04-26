@@ -1,5 +1,3 @@
-package dvSwitchOperations;
-
 //:: # Author: P Kiran Kumar
 //:: # Product/Feature: VC
 //:: # Description: Creates Distributed Virtual Switch in the specified datacenter using vSphere java API. 
