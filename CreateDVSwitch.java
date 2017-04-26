@@ -91,7 +91,7 @@ public class CreateDVSwitch {
 					+ vcIPaddress + "/sdk"), userName, passwd, true);
 			CreateDVSwitch obj = new CreateDVSwitch();
 			DistributedVirtualSwitch dvsObj = obj
-					.createDistributedVirtualSwitch(si, "dvs1", "Datacenter");
+					.createDistributedVirtualSwitch(si, "DSwitch", "Datacenter");
 		} catch (Exception e) {
 
 		}
