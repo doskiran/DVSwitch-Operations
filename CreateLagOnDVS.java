@@ -28,10 +28,10 @@ public class CreateLagOnDVS {
 	 */
 	public boolean createLag(ServiceInstance si, String dvsName) {
 		boolean status = true;
-		DistributedVirtualSwitch dvSwitch = null;
+		VmwareDistributedVirtualSwitch dvSwitch = null;
 		try {
 			if (si != null) {
-				dvSwitch = (DistributedVirtualSwitch) new InventoryNavigator(
+				dvSwitch = (VmwareDistributedVirtualSwitch) new InventoryNavigator(
 						si.getRootFolder()).searchManagedEntity(
 						"DistributedVirtualSwitch", dvsName);
 				if (dvSwitch != null) {
@@ -45,8 +45,7 @@ public class CreateLagOnDVS {
 							.setLoadbalanceAlgorithm(VMwareDvsLacpLoadBalanceAlgorithm.srcDestIpTcpUdpPortVlan
 									.toString());
 					lagGrpSpec.setLacpGroupConfig(lacpGroupConf);
-					VmwareDistributedVirtualSwitch vmdvs = (VmwareDistributedVirtualSwitch) dvSwitch;
-					Task task_lag = vmdvs
+					Task task_lag = dvSwitch
 							.updateDVSLacpGroupConfig_Task(new VMwareDvsLacpGroupSpec[] { lagGrpSpec });
 					TaskInfo ti = waitFor(task_lag);
 					if (ti.getState() == TaskInfoState.error) {
