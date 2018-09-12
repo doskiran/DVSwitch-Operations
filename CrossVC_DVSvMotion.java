@@ -214,12 +214,12 @@ public class CrossVC_DVSvMotion {
 	}
 
 	public static void main(String[] args) {
-		String vmName = "VM2"; // SourceVC VM name
-		String srcVCIP = "10.162.25.32"; // SourceVC IP/hostname
-		String destVCIP = "10.162.31.7"; // DestinationVC IP/hostname
+		String vmName = "VM1"; // SourceVC VM name
+		String srcVCIP = "10.10.10.11"; // SourceVC IP/hostname
+		String destVCIP = "10.10.10.12"; // DestinationVC IP/hostname
 		String userName = "Administrator@vsphere.local";
-		String passwd = "Admin!23";
-		String destHost = "10.161.115.124"; // DestinationVC ESXi hostname to migrate VM
+		String passwd = "Afdgfg%3we1";
+		String destHost = "10.20.20.10"; // DestinationVC ESXi hostname to migrate VM
 		String dvSwitchName = "DSwitch"; // DestinationVC dvSwitch name
 		String dvPortgroupName = "DPortGroup";
 		try {
