@@ -68,16 +68,7 @@ public class CrossVC_DVSvMotion {
 					portGroupKey = dvPortgroup[j].getKey();
 				}
 			}
-			dvsUUID = dvs.getUuid();
-
-			ManagedObjectReference dsMor = null;
-			Datastore[] dsArr = hs.getDatastores();
-			for (Datastore ds : dsArr) {
-				if (ds.getName().equalsIgnoreCase("sharedVmfs-0")) {
-					dsMor = ds.getMOR();
-					break;
-				}
-			}
+			dvsUUID = dvs.getUuid();			
 
 			// Below is code for ServiceLocator which is key for this vMotion
 			// to happen
@@ -97,7 +88,7 @@ public class CrossVC_DVSvMotion {
 			vmRelSpec.setFolder(getHostDataCenter(destSI, hs).getVmFolder()
 					.getMOR());
 			vmRelSpec.setHost(hs.getMOR());
-			vmRelSpec.setDatastore(dsMor);
+			//vmRelSpec.setDatastore(dsMor);
 			vmRelSpec.setDeviceChange(getVirtualDeviceConfigSpec(vm, dvsUUID,
 					portGroupKey, "Network adapter 1"));
 			vmRelSpec.setPool((cr != null) ? cr.getResourcePool().getMOR() : hs
