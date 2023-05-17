@@ -1,2 +1,2 @@
 # DVSwitch-Operations
-VMware Distributed Virtual Switch Operations using vSphere java API. 
+VMware Distributed Virtual Switch Operations using VI / YAVI java APIs.. 
