@@ -7,11 +7,13 @@ import java.net.URL;
 import com.vmware.vim25.DVSConfigSpec;
 import com.vmware.vim25.DVSCreateSpec;
 import com.vmware.vim25.DVSNameArrayUplinkPortPolicy;
+import com.vmware.vim25.DistributedVirtualSwitchProductSpec;
 import com.vmware.vim25.ManagedObjectReference;
 import com.vmware.vim25.TaskInfo;
 import com.vmware.vim25.TaskInfoState;
 import com.vmware.vim25.mo.Datacenter;
 import com.vmware.vim25.mo.DistributedVirtualSwitch;
+import com.vmware.vim25.mo.DistributedVirtualSwitchManager;
 import com.vmware.vim25.mo.Folder;
 import com.vmware.vim25.mo.InventoryNavigator;
 import com.vmware.vim25.mo.ServiceInstance;
@@ -33,9 +35,8 @@ public class CreateDVSwitch {
 	 * @return
 	 * @throws Exception
 	 */
-	public DistributedVirtualSwitch createDistributedVirtualSwitch(
-			ServiceInstance si, String dvsName, String dataCenterName)
-			throws Exception {
+	public DistributedVirtualSwitch createDistributedVirtualSwitch(ServiceInstance si, String dvsName,
+			String dataCenterName, String vDsVersion) throws Exception {
 		DVSCreateSpec dvsCreateSpec = null;
 		Datacenter dc = null;
 		Folder networkFolder = null;
@@ -43,36 +44,47 @@ public class CreateDVSwitch {
 		ManagedObjectReference dvsMor = null;
 		try {
 			if (si != null) {
-				dc = (Datacenter) new InventoryNavigator(si.getRootFolder())
-						.searchManagedEntity("Datacenter", dataCenterName);
+				dc = (Datacenter) new InventoryNavigator(si.getRootFolder()).searchManagedEntity("Datacenter",
+						dataCenterName);
 				dvsCreateSpec = new DVSCreateSpec();
 				DVSConfigSpec dvsConfigSpec = new DVSConfigSpec();
 				dvsConfigSpec.setConfigVersion("");
 				dvsConfigSpec.setName(dvsName);
 				dvsConfigSpec.setDescription(dvsName);
 				dvsConfigSpec.setNumStandalonePorts(10);
-				String[] uplinkPortNames = { "uplink1", "uplink2", "uplink3",
-						"uplink4" };
+				String[] uplinkPortNames = { "uplink1", "uplink2", "uplink3", "uplink4" };
 				DVSNameArrayUplinkPortPolicy uplinkPolicyInst = new DVSNameArrayUplinkPortPolicy();
 				uplinkPolicyInst.setUplinkPortName(uplinkPortNames);
 				dvsConfigSpec.setUplinkPortPolicy(uplinkPolicyInst);
 				dvsCreateSpec.setConfigSpec(dvsConfigSpec);
 				networkFolder = dc.getNetworkFolder();
+
+				if (vDsVersion != null) {
+					DistributedVirtualSwitchProductSpec productSpec = null;
+					DistributedVirtualSwitchManager dvsMgr = si.getDistributedVirtualSwitchManager();
+					DistributedVirtualSwitchProductSpec[] productSpecList = dvsMgr.queryAvailableDvsSpec();
+					if (productSpecList != null && productSpecList.length > 0) {
+						for (final DistributedVirtualSwitchProductSpec spec : productSpecList) {
+							if (vDsVersion.equalsIgnoreCase(spec.getVersion())) {
+								productSpec = spec;
+								break;
+							}
+						}
+					}
+					dvsCreateSpec.setProductInfo(productSpec);
+				}
+
 				Task task = networkFolder.createDVS_Task(dvsCreateSpec);
 				String waitForTask = task.waitForTask();
 				System.out.println("Task...." + waitForTask);
 				TaskInfo taskInfo = task.getTaskInfo();
 				if ((taskInfo.getState()).equals(TaskInfoState.success)) {
 					dvsMor = (ManagedObjectReference) taskInfo.getResult();
-					dvSwitch = new DistributedVirtualSwitch(
-							si.getServerConnection(), dvsMor);
-					System.out
-							.println("Distributed Virtual Switch created successfully::"
-									+ dvSwitch.getName());
+					dvSwitch = new DistributedVirtualSwitch(si.getServerConnection(), dvsMor);
+					System.out.println("Distributed Virtual Switch created successfully::" + dvSwitch.getName());
 				} else {
-					System.out
-							.println("Distributed Virtual Switch creation failed message...."
-									+ taskInfo.getError().getLocalizedMessage());
+					System.out.println("Distributed Virtual Switch creation failed message...."
+							+ taskInfo.getError().getLocalizedMessage());
 				}
 			}
 
@@ -86,12 +98,13 @@ public class CreateDVSwitch {
 		String vcIPaddress = "10.10.10.1"; // VC ipaddress/hostname
 		String userName = "Administrator@vsphere.local"; // VC username
 		String passwd = "jsdhdjksjksdnuj"; // VC password
+		String vDsVersion = "7.0.0"; // Optional
 		try {
-			ServiceInstance si = new ServiceInstance(new URL("https://"
-					+ vcIPaddress + "/sdk"), userName, passwd, true);
+			ServiceInstance si = new ServiceInstance(new URL("https://" + vcIPaddress + "/sdk"), userName, passwd,
+					true);
 			CreateDVSwitch obj = new CreateDVSwitch();
-			DistributedVirtualSwitch dvsObj = obj
-					.createDistributedVirtualSwitch(si, "DSwitch", "Datacenter");
+			DistributedVirtualSwitch dvsObj = obj.createDistributedVirtualSwitch(si, "DSwitch123", "vcqaDC",
+					vDsVersion);
 		} catch (Exception e) {
 
 		}
