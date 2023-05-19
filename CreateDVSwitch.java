@@ -59,7 +59,7 @@ public class CreateDVSwitch {
 				dvsCreateSpec.setConfigSpec(dvsConfigSpec);
 				networkFolder = dc.getNetworkFolder();
 
-				if (vDsVersion != null) {
+				if (vDsVersion != null && !vDsVersion.isEmpty()) {
 					DistributedVirtualSwitchProductSpec productSpec = null;
 					DistributedVirtualSwitchManager dvsMgr = si.getDistributedVirtualSwitchManager();
 					DistributedVirtualSwitchProductSpec[] productSpecList = dvsMgr.queryAvailableDvsSpec();
@@ -98,7 +98,7 @@ public class CreateDVSwitch {
 		String vcIPaddress = "10.10.10.1"; // VC ipaddress/hostname
 		String userName = "Administrator@vsphere.local"; // VC username
 		String passwd = "jsdhdjksjksdnuj"; // VC password
-		String vDsVersion = "7.0.0"; // Optional
+		String vDsVersion = "6.0.0"; // Optional
 		try {
 			ServiceInstance si = new ServiceInstance(new URL("https://" + vcIPaddress + "/sdk"), userName, passwd,
 					true);
